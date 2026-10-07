@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Nuit Étudiante</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      border: 0;
+      background: #eee;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    nav button.active {
+      background: #111;
+      color: white;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input,
+    select,
+    button {
+      font-size: 16px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .primary {
+      width: 100%;
+      border: 0;
+      background: #111;
+      color: white;
+      padding: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .primary:hover {
+      opacity: 0.9;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .success {
+      background: #e8f7e8;
+      color: #176b17;
+    }
+
+    .error {
+      background: #fdeaea;
+      color: #9b1c1c;
+    }
+
+    .places {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .place {
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fafafa;
+    }
+
+    .qr-box {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    #qrcode {
+      display: inline-block;
+      padding: 15px;
+      background: white;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: #f5f5f5;
+      padding: 18px;
+      border-radius: 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 5px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px;
+      background: #000;
+      display: block;
+      margin: 15px auto;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>La Nuit Étudiante</h1>
+  <p>Nîmes — parcours culturel étudiant</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('inscription', this)">
+    🎓 Inscription
+  </button>
+
+  <button onclick="showPage('qr', this)">
+    🎟️ Mon QR
+  </button>
+
+  <button onclick="showPage('scanner', this)">
+    📱 Scanner
+  </button>
+
+  <button onclick="showPage('dashboard', this)">
+    📊 Tableau de bord
+  </button>
+</nav>
+
+<main>
+
+  <!-- INSCRIPTION -->
+
+  <section id="inscription" class="page active">
+
+    <div class="card">
+
+      <h2>Inscription étudiant</h2>
+
+      <p>
+        Inscris-toi pour participer à La Nuit Étudiante.
+      </p>
+
+      <label for="postalCode">
+        Code postal
+      </label>
+
+      <input
+        id="postalCode"
+        type="text"
+        inputmode="numeric"
+        maxlength="10"
+        placeholder="Ex. 30000"
+      >
+
+      <button
+        class="primary"
+        onclick="registerStudent()"
+      >
+        Créer mon QR code
+      </button>
+
+      <div
+        id="registrationMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- QR -->
+
+  <section id="qr" class="page">
+
+    <div class="card">
+
+      <h2>Mon QR code</h2>
+
+      <p>
+        Présente ce QR code à l'équipe de chaque lieu
+        que tu visites.
+      </p>
+
+      <div class="qr-box">
+
+        <div id="qrcode">
+          <p class="small">
+            Aucun QR code pour le moment.
+          </p>
+        </div>
+
+      </div>
+
+      <p
+        id="studentCodeDisplay"
+        class="small"
+        style="text-align:center;margin-top:15px;"
+      ></p>
+
+    </div>
+
+  </section>
+
+
+  <!-- SCANNER -->
+
+  <section id="scanner" class="page">
+
+    <div class="card">
+
+      <h2>Scanner un étudiant</h2>
+
+      <label for="museumSelect">
+        Lieu
+      </label>
+
+      <select id="museumSelect">
+
+        <option value="">
+          Sélectionner un lieu
+        </option>
+
+        <option value="Musée d'Histoire naturelle">
+          Musée d'Histoire naturelle
+        </option>
+
+        <option value="Musée des Beaux-arts">
+          Musée des Beaux-arts
+        </option>
+
+        <option value="Musée du Vieux Nîmes">
+          Musée du Vieux Nîmes
+        </option>
+
+        <option value="Musée d'art contemporain">
+          Musée d'art contemporain
+        </option>
+
+        <option value="Galerie Jules Salles">
+          Galerie Jules Salles
+        </option>
+
+        <option value="Galerie Courbet">
+          Galerie Courbet
+        </option>
+
+        <option value="Chapelle des Jésuites">
+          Chapelle des Jésuites
+        </option>
+
+      </select>
+
+      <button
+        class="primary"
+        onclick="startScanner()"
+      >
+        Démarrer le scanner
+      </button>
+
+      <video
+        id="scannerVideo"
+        autoplay
+        playsinline
+        style="display:none;"
+      ></video>
+
+      <div
+        id="scannerMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- DASHBOARD -->
+
+  <section id="dashboard" class="page">
+
+    <div class="card">
+
+      <h2>Tableau de bord</h2>
+
+      <div class="stats">
+
+        <div class="stat">
+          Étudiants uniques
+          <strong id="studentCount">0</strong>
+        </div>
+
+        <div class="stat">
+          Passages enregistrés
+          <strong id="entryCount">0</strong>
+        </div>
+
+        <div class="stat">
+          Lieux
+          <strong>7</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Les 7 lieux</h2>
+
+      <div class="places">
+
+        <div class="place">
+          Musée d'Histoire naturelle
+        </div>
+
+        <div class="place">
+          Musée des Beaux-arts
+        </div>
+
+        <div class="place">
+          Musée du Vieux Nîmes
+        </div>
+
+        <div class="place">
+          Musée d'art contemporain
+        </div>
+
+        <div class="place">
+          Galerie Jules Salles
+        </div>
+
+        <div class="place">
+          Galerie Courbet
+        </div>
+
+        <div class="place">
+          Chapelle des Jésuites
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<script>
+
+  /*
+   * Les valeurs Supabase seront ajoutées
+   * à l'étape suivante.
+   */
+
+  const SUPABASE_URL = "";
+  const SUPABASE_KEY = "";
+
+  const museums = [
+    "Musée d'Histoire naturelle",
+    "Musée des Beaux-arts",
+    "Musée du Vieux Nîmes",
+    "Musée d'art contemporain",
+    "Galerie Jules Salles",
+    "Galerie Courbet",
+    "Chapelle des Jésuites"
+  ];
+
+
+  function showPage(pageId, button) {
+
+    document
+      .querySelectorAll(".page")
+      .forEach(page => {
+        page.classList.remove("active");
+      });
+
+    document
+      .getElementById(pageId)
+      .classList.add("active");
+
+    document
+      .querySelectorAll("nav button")
+      .forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+    button.classList.add("active");
+
+  }
+
+
+  function registerStudent() {
+
+    const postalCode =
+      document
+        .getElementById("postalCode")
+        .value
+        .trim();
+
+    const message =
+      document.getElementById(
+        "registrationMessage"
+      );
+
+    if (!postalCode) {
+
+      message.textContent =
+        "Merci d'indiquer ton code postal.";
+
+      message.className =
+        "message error";
+
+      message.style.display =
+        "block";
+
+      return;
+    }
+
+
+    /*
+     * Pour le moment nous créons
+     * un identifiant temporaire.
+     *
+     * La connexion Supabase sera
+     * ajoutée à l'étape suivante.
+     */
+
+    const studentCode =
+      crypto.randomUUID();
+
+
+    localStorage.setItem(
+      "studentCode",
+      studentCode
+    );
+
+    localStorage.setItem(
+      "postalCode",
+      postalCode
+    );
+
+
+    message.textContent =
+      "Inscription préparée. Ton QR code sera disponible après connexion à Supabase.";
+
+    message.className =
+      "message success";
+
+    message.style.display =
+      "block";
+
+
+    document
+      .getElementById(
+        "studentCodeDisplay"
+      )
+      .textContent =
+        "Identifiant : " + studentCode;
+
+
+    generateFakeQR(studentCode);
+
+  }
+
+
+  function generateFakeQR(code) {
+
+    const qr =
+      document.getElementById("qrcode");
+
+    qr.innerHTML = "";
+
+    const text =
+      document.createElement("p");
+
+    text.textContent =
+      "QR étudiant";
+
+    text.style.fontSize =
+      "24px";
+
+    text.style.fontWeight =
+      "bold";
+
+    qr.appendChild(text);
+
+    const small =
+      document.createElement("p");
+
+    small.className =
+      "small";
+
+    small.textContent =
+      code;
+
+    qr.appendChild(small);
+
+  }
+
+
+  async function startScanner() {
+
+    const museum =
+      document.getElementById(
+        "museumSelect"
+      ).value;
+
+    const message =
+      document.getElementById(
+        "scannerMessage"
+      );
+
+
+    if (!museum) {
+
+      message.textContent =
+        "Sélectionne d'abord le lieu.";
+
+      message.className =
+        "message error";
+
+      message.style.display =
+        "block";
+
+      return;
+    }
+
+
+    if (
+      !("BarcodeDetector" in window)
+    ) {
+
+      message.textContent =
+        "Le scanner QR sera activé dans la prochaine étape.";
+
+      message.className =
+        "message error";
+
+      message.style.display =
+        "block";
+
+      return;
+    }
+
+
+    const video =
+      document.getElementById(
+        "scannerVideo"
+      );
+
+    video.style.display =
+      "block";
+
+
+    try {
+
+      const stream =
+        await navigator.mediaDevices
+          .getUserMedia({
+            video: {
+              facingMode: "environment"
+            }
+          });
+
+      video.srcObject =
+        stream;
+
+      message.textContent =
+        "Scanner prêt pour : " + museum;
+
+      message.className =
+        "message success";
+
+      message.style.display =
+        "block";
+
+    } catch (error) {
+
+      message.textContent =
+        "Impossible d'accéder à la caméra.";
+
+      message.className =
+        "message error";
+
+      message.style.display =
+        "block";
+
+    }
+
+  }
+
+
+  /*
+   * Affichage initial des données
+   * locales.
+   */
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      const code =
+        localStorage.getItem(
+          "studentCode"
+        );
+
+      if (code) {
+
+        document
+          .getElementById(
+            "studentCodeDisplay"
+          )
+          .textContent =
+            "Identifiant : " + code;
+
+        generateFakeQR(code);
+
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
